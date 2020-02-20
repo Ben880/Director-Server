@@ -13,9 +13,9 @@ namespace DirectorServer
 
         public UnityConnection()
         {
-            try {  			
-                serverReceiveThread = new Thread (new ThreadStart(ListenForCommands)); 			
-                serverReceiveThread.IsBackground = true; 			
+            try {
+                serverReceiveThread = new Thread(new ThreadStart(ListenForCommands)) {IsBackground = true};
+
                 serverReceiveThread.Start();  		
             } 		
             catch (Exception e) { 			
@@ -58,12 +58,13 @@ namespace DirectorServer
                             Console.WriteLine("Sent: {0}", data);
                         }
 
-                        // Shutdown and end connection
-                        if (data.Split(",")[0].Split(":")[1].Equals("ServerMain"))
+                        if (!stream.CanRead)
                         {
-                            if (data.Split(",")[1].Split(":")[1].Equals("EndConnection"))
-                                client.Close(); // <=============== find a new home?
+                            client.Close(); 
+                            Console.WriteLine("-1 closing connection");
                         }
+                        // Shutdown and end connection
+       
                     }
                 }
             }
