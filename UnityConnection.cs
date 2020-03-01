@@ -2,6 +2,8 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using DirectorProtobuf;
+using Google.Protobuf;
 
 namespace DirectorServer
 {
@@ -18,16 +20,22 @@ namespace DirectorServer
         public void HandleConnection()
         {
             Console.WriteLine("Connected!");
+            DataList list = new DataList();
             try
             {
                 var stream = client.GetStream();
                 do
                 {
+                    list.MergeFrom(stream);
                     int numberOfBytesRead = stream.Read(buffer, 0, buffer.Length);
-                    Console.WriteLine("Received: {0}", Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
+                    //Console.WriteLine("Received: {0}", Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
                     stream.Write(buffer, 0, numberOfBytesRead);
                 }
                 while (stream.DataAvailable);
+                
+                Console.WriteLine("Disconnected?");
+                Console.WriteLine("Recieved");
+                Console.WriteLine(list.ToString());
                 stream.Close();
             }
             catch (Exception e)
