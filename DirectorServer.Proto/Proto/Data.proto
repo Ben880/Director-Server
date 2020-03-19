@@ -1,0 +1,12 @@
+﻿syntax = "proto2";
+package DirectorProtobuf;
+
+message Data {
+    required string name = 1;
+    required float value = 2;
+}
+// 
+message DataList {
+    repeated Data data = 1;
+}
+
