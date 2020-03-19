@@ -26,7 +26,8 @@ namespace DirectorServer
                 var stream = client.GetStream();
                 do
                 {
-                    list.MergeFrom(stream);
+                    list.MergeDelimitedFrom(stream);
+                    //list.MergeFrom(stream);
                     int numberOfBytesRead = stream.Read(buffer, 0, buffer.Length);
                     //Console.WriteLine("Received: {0}", Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
                     stream.Write(buffer, 0, numberOfBytesRead);
