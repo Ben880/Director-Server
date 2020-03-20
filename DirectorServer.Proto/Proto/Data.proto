@@ -1,12 +1,30 @@
 ﻿syntax = "proto2";
 package DirectorProtobuf;
 
-message Data {
-    required string name = 1;
-    required float value = 2;
+// wrapper to determine which protobuf is being sent
+message DataWrapper  {
+    oneof msg {
+        DataList dataList = 2;
+        CommandChange commandChange = 3;
+        DirectorRPC directorRPC = 4;
+    }
 }
-// 
+// protobufs for sending data
+message Data {
+    required string name = 2;
+    required float value = 3;
+}
 message DataList {
-    repeated Data data = 1;
+    repeated Data data = 2;
+}
+// protobufs for sending command changes
+message CommandChange {
+    required string name = 2;
+    required bool value = 3;
+}
+//protobufs for sending rpc
+message DirectorRPC{
+    required string name = 2;
+    repeated string args =3;
 }
 

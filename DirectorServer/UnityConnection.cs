@@ -20,23 +20,22 @@ namespace DirectorServer
         public void HandleConnection()
         {
             Console.WriteLine("Connected!");
-            DataList list = new DataList();
+            DataWrapper wrapper = new DataWrapper();
             try
             {
                 var stream = client.GetStream();
                 do
                 {
-                    list.MergeDelimitedFrom(stream);
-                    //list.MergeFrom(stream);
+                    wrapper.MergeDelimitedFrom(stream);
                     int numberOfBytesRead = stream.Read(buffer, 0, buffer.Length);
-                    //Console.WriteLine("Received: {0}", Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
                     stream.Write(buffer, 0, numberOfBytesRead);
                 }
                 while (stream.DataAvailable);
-                
                 Console.WriteLine("Disconnected?");
                 Console.WriteLine("Recieved");
-                Console.WriteLine(list.ToString());
+                // do logic here 
+                if (wrapper.MsgCase == DataWrapper.MsgOneofCase.DataList)
+                    Console.WriteLine(wrapper.DataList.ToString());
                 stream.Close();
             }
             catch (Exception e)
