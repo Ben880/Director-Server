@@ -19,29 +19,35 @@ namespace DirectorServer
 
         public void HandleConnection()
         {
-            Console.WriteLine("Connected!");
-            DataWrapper wrapper = new DataWrapper();
             try
             {
-                var stream = client.GetStream();
+                Console.WriteLine("Connected!");
                 do
                 {
-                    wrapper.MergeDelimitedFrom(stream);
-                    int numberOfBytesRead = stream.Read(buffer, 0, buffer.Length);
-                    stream.Write(buffer, 0, numberOfBytesRead);
-                }
-                while (stream.DataAvailable);
-                Console.WriteLine("Disconnected?");
-                Console.WriteLine("Recieved");
-                // do logic here 
-                if (wrapper.MsgCase == DataWrapper.MsgOneofCase.DataList)
-                    Console.WriteLine(wrapper.DataList.ToString());
-                stream.Close();
+                    Console.WriteLine("Listening for data");
+                    DataWrapper wrapper = new DataWrapper();
+                    
+                        var stream = client.GetStream();
+                        do
+                        {
+                            wrapper.MergeDelimitedFrom(stream);
+                            int numberOfBytesRead = stream.Read(buffer, 0, buffer.Length);
+                            stream.Write(buffer, 0, numberOfBytesRead);
+                        }
+                        while (stream.DataAvailable);
+                        Console.WriteLine("End of stream");
+                        // do logic here 
+                        if (wrapper.MsgCase == DataWrapper.MsgOneofCase.DataList)
+                            Console.WriteLine(wrapper.DataList.ToString());
+                        //stream.Close();
+                    
+                } while (client.Connected);
             }
             catch (Exception e)
             {
                 Console.WriteLine("Exception: {0}", e);
             }
+            client.Close();
         }
     }
 
