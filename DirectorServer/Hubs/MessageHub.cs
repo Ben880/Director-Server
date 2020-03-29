@@ -5,6 +5,26 @@ namespace DirectorServer.Hubs
 {
     public class MessageHub : Hub
     {
+        public readonly IHubContext<MessageHub> hubContext;
+        private readonly IDoStuff _doStuff;
+        public MessageHub(IDoStuff doStuff)
+        {
+            _doStuff = doStuff;
+        }
+
+        public string GetData()
+        {
+            return  _doStuff.GetData();
+        }
+        public MessageHub(IHubContext<MessageHub> hubContext)
+        {
+            this.hubContext = hubContext;
+        }
+        public Task sendDataToGroup(string group, string data)
+        {
+            return Clients.Group(group).SendAsync("ReceiveData", data);
+        }
+        
         public Task SendMessageToAll(string message)
         {
             return Clients.All.SendAsync("ReceiveMessage", message);
@@ -41,5 +61,7 @@ namespace DirectorServer.Hubs
             await Clients.All.SendAsync("UserDisconnected", Context.ConnectionId);
             await base.OnDisconnectedAsync(ex);
         }
+        
+
     }      
 }

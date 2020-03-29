@@ -6,7 +6,7 @@ message DataWrapper  {
     oneof msg {
         DataList dataList = 2;
         CommandChange commandChange = 3;
-        DirectorRPC directorRPC = 4;
+        ExecuteCommand executeCommand = 4;
     }
 }
 // protobufs for sending data
@@ -23,8 +23,7 @@ message CommandChange {
     required bool value = 3;
 }
 //protobufs for sending rpc
-message DirectorRPC{
+message ExecuteCommand{
     required string name = 2;
     repeated string args =3;
 }
-

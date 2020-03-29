@@ -35,7 +35,7 @@ namespace DirectorServer
                         }
                         while (stream.DataAvailable);
                         Console.WriteLine("End of stream");
-                        DecodeProtobuf.decodeProtobuf(wrapper);
+                        ProtoRouter.routeProtobuf(wrapper);
                         stream.Close();
                     
                 } while (client.Connected);
