@@ -26,8 +26,7 @@ namespace DirectorServer
                 {
                     Console.WriteLine("Listening for data");
                     DataWrapper wrapper = new DataWrapper();
-                    
-                        var stream = client.GetStream();
+                    var stream = client.GetStream();
                         do
                         {
                             wrapper.MergeDelimitedFrom(stream);
@@ -36,10 +35,8 @@ namespace DirectorServer
                         }
                         while (stream.DataAvailable);
                         Console.WriteLine("End of stream");
-                        // do logic here 
-                        if (wrapper.MsgCase == DataWrapper.MsgOneofCase.DataList)
-                            Console.WriteLine(wrapper.DataList.ToString());
-                        //stream.Close();
+                        DecodeProtobuf.decodeProtobuf(wrapper);
+                        stream.Close();
                     
                 } while (client.Connected);
             }
