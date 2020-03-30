@@ -1,16 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using DirectorProtobuf;
+using Microsoft.AspNetCore.Routing;
 
 namespace DirectorServer
 {
     public class ProtoRouter
     {
-        private Dictionary<DataWrapper.MsgOneofCase, Routable> routes = new Dictionary<DataWrapper.MsgOneofCase, Routable>();
+        private static Dictionary<DataWrapper.MsgOneofCase, Routable> routes = new Dictionary<DataWrapper.MsgOneofCase, Routable>();
         public static void routeProtobuf(DataWrapper wrapper)
         {
-            if (wrapper.MsgCase == DataWrapper.MsgOneofCase.DataList)
-                Console.WriteLine(wrapper.DataList.ToString());
+            if (routes.ContainsKey(wrapper.MsgCase))
+            {
+                routes[wrapper.MsgCase].route(wrapper);
+                Console.WriteLine($"Routed {wrapper.MsgCase}");
+            }
+            else
+            {
+                Console.WriteLine($"No route for {wrapper.MsgCase}");
+            }
         }
         
         public void registerRoute(DataWrapper.MsgOneofCase buffName, Routable routable)
@@ -20,7 +28,7 @@ namespace DirectorServer
         
         public ProtoRouter()
         {
-            
+            routes.Add(DataWrapper.MsgOneofCase.DataList, new UnityDataHolder());
         }
     }
 }

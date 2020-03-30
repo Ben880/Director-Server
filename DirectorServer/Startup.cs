@@ -29,8 +29,6 @@ namespace DirectorServer
             services.AddRazorPages();
             services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddSignalR();
-            services.AddSingleton<IDoStuff, DoStuff>();
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

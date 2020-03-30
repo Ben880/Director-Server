@@ -8,9 +8,9 @@ namespace DirectorServer
 
     public class Routable
     {
-        public virtual Task route(DataWrapper wrapper)
+        public virtual void route(DataWrapper wrapper)
         {
-            return null;
+           
         }
     }
 

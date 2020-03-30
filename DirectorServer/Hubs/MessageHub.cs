@@ -1,25 +1,19 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 namespace DirectorServer.Hubs
 {
     public class MessageHub : Hub
     {
-        public readonly IHubContext<MessageHub> hubContext;
-        private readonly IDoStuff _doStuff;
-        public MessageHub(IDoStuff doStuff)
-        {
-            _doStuff = doStuff;
-        }
 
-        public string GetData()
+        public Task sendDataToUser()
         {
-            return  _doStuff.GetData();
+            Console.WriteLine("sendDataToUser called: ");
+            string message = UnityDataHolder.getData();
+            return Clients.Caller.SendAsync("ReceiveData", message);
         }
-        public MessageHub(IHubContext<MessageHub> hubContext)
-        {
-            this.hubContext = hubContext;
-        }
+        
         public Task sendDataToGroup(string group, string data)
         {
             return Clients.Group(group).SendAsync("ReceiveData", data);
@@ -62,6 +56,5 @@ namespace DirectorServer.Hubs
             await base.OnDisconnectedAsync(ex);
         }
         
-
     }      
 }

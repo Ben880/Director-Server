@@ -36,8 +36,7 @@ namespace DirectorServer
                         while (stream.DataAvailable);
                         Console.WriteLine("End of stream");
                         ProtoRouter.routeProtobuf(wrapper);
-                        stream.Close();
-                    
+                        stream.Flush();
                 } while (client.Connected);
             }
             catch (Exception e)
@@ -54,6 +53,7 @@ namespace DirectorServer
 
         public UnityConnection()
         {
+            new ProtoRouter();
             var server = new TcpListener(netConfig.Address, netConfig.Port);
             try
             {

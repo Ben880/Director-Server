@@ -11,13 +11,17 @@ connection.on("ReceiveMessage", function(message) {
     document.getElementById("messages").appendChild(div);
 });
 
-connection.on("ReceivData", function(message) {
+connection.on("ReceiveData", function(message) {
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var div = document.createElement("div");
     div.innerHTML = msg + "<hr/>";
     document.getElementById("datum").innerHTML = "";
     document.getElementById("datum").appendChild(div);
+    connection.invoke("sendDataToUser").catch(function (err) {
+        return console.error(err.toString());
+    });
 });
+
 
 connection.on("UserConnected", function(connectionId) {
     var groupElement = document.getElementById("group");
@@ -38,6 +42,13 @@ connection.on("UserDisconnected", function(connectionId) {
 
 connection.start().catch(function(err) {
     return console.error(err.toString());
+});
+
+document.getElementById("dataButton").addEventListener("click", function(event) {
+    connection.invoke("sendDataToUser").catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
 });
 
 document.getElementById("sendButton").addEventListener("click", function(event) {
