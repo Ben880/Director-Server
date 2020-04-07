@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using DirectorProtobuf;
-using Microsoft.AspNetCore.Routing;
 
 namespace DirectorServer
 {
@@ -23,12 +22,13 @@ namespace DirectorServer
         
         public void registerRoute(DataWrapper.MsgOneofCase buffName, Routable routable)
         {
-            routes.Add(buffName, routable);
+            routes.TryAdd(buffName, routable);
         }
         
         public ProtoRouter()
         {
-            routes.Add(DataWrapper.MsgOneofCase.DataList, new UnityDataHolder());
+            routes.TryAdd(DataWrapper.MsgOneofCase.DataList, new UnityDataHolder());
         }
+        
     }
 }

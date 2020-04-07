@@ -22,8 +22,18 @@ message CommandChange {
     required string name = 2;
     required bool value = 3;
 }
-//protobufs for sending rpc
+//protobufs for sending commands
 message ExecuteCommand{
     required string name = 2;
     repeated string args =3;
 }
+//connection interaction
+message UnityCredentials{
+    required int32 ID = 2;
+    required string token =3;
+}
+message UnitySettings{
+    required string name = 2;
+    required bool public = 3;
+}
+

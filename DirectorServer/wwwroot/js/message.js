@@ -18,7 +18,7 @@ connection.on("ReceiveData", function(message) {
     document.getElementById("datum").innerHTML = "";
     document.getElementById("datum").appendChild(div);
     connection.invoke("sendDataToUser").catch(function (err) {
-        return console.error(err.toString());
+        return console.error(err.toString());//if there is a transmission error it will stop forever
     });
 });
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using DirectorServer;
 using Microsoft.AspNetCore.SignalR;
 namespace DirectorServer.Hubs
 {
@@ -9,7 +10,6 @@ namespace DirectorServer.Hubs
 
         public Task sendDataToUser()
         {
-            Console.WriteLine("sendDataToUser called: ");
             string message = UnityDataHolder.getData();
             return Clients.Caller.SendAsync("ReceiveData", message);
         }
