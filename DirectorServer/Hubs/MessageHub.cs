@@ -56,5 +56,18 @@ namespace DirectorServer.Hubs
             await base.OnDisconnectedAsync(ex);
         }
         
+        //outside methods
+        public Task addGroup()
+        {
+            
+            return Clients.All.SendAsync("NewMethodHere", "");
+        }
+        
+        public Task removeGroup()
+        {
+            
+            return Clients.All.SendAsync("NewMethodHere", "");
+        }
+        
     }      
 }

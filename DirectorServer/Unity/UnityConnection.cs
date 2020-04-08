@@ -10,10 +10,13 @@ namespace DirectorServer
     {
         private readonly TcpClient client;
         private readonly byte[] buffer = new byte[1024];
+        private int clientID;
 
         public SocketHandler(TcpClient client)
         {
             this.client = client;
+            clientID = ClientManager.getID();
+            ClientManager.registerClient(clientID);
         }
 
         public void HandleConnection()
@@ -43,6 +46,23 @@ namespace DirectorServer
                 Console.WriteLine("Exception: {0}", e);
             }
             client.Close();
+        }
+        
+        public void sendToServer(DataWrapper protoObject)
+        {
+            if (!client.Connected) {             
+                return;         
+            }  
+            try
+            {
+                NetworkStream stream = client.GetStream();
+                if (stream.CanWrite) {
+                    protoObject.WriteDelimitedTo(stream);
+                }         
+            } 		
+            catch (SocketException socketException) {            
+                Console.WriteLine("Socket exception: " + socketException);
+            }
         }
     }
 

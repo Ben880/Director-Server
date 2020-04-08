@@ -7,6 +7,8 @@ message DataWrapper  {
         DataList dataList = 2;
         CommandChange commandChange = 3;
         ExecuteCommand executeCommand = 4;
+        UnityCredentials unityCredentials = 5;
+        UnitySettings unitySettings = 6;
     }
 }
 // protobufs for sending data

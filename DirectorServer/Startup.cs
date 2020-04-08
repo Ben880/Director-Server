@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -63,6 +64,13 @@ namespace DirectorServer
             });
             app.UseMvc();
             
+            app.Use(async (context, next) =>
+            {
+                var hubContext = context.RequestServices
+                    .GetRequiredService<IHubContext<MessageHub>>();
+                HubContextHolder.setContext(hubContext);
+                //...
+            });
             
         }
     }

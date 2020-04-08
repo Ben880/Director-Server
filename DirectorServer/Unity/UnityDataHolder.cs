@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using DirectorProtobuf;
+using Microsoft.AspNetCore.SignalR;
 
 namespace DirectorServer
 {
@@ -29,6 +30,7 @@ namespace DirectorServer
             stringLock = true;
             dataString = sb.ToString();
             stringLock = false;
+            //HubContextHolder.getHubContext().Clients.All.SendAsync("NewMethodHere", "");
         }
             
         
