@@ -1,73 +1,52 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using DirectorServer;
+using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using HubCallerContext = Microsoft.AspNet.SignalR.Hubs.HubCallerContext;
+using IGroupManager = Microsoft.AspNet.SignalR.IGroupManager;
+
 namespace DirectorServer.Hubs
 {
     public class MessageHub : Hub
     {
-
-        public Task sendDataToUser()
+        public Task SendDataToUser()
         {
-            string message = UnityDataHolder.getData();
-            return Clients.Caller.SendAsync("ReceiveData", message);
+            string message 
+                = ClientInfo.getGroup(Context.ConnectionId).Equals("") 
+                ? UnityClientList.getClientList()
+                : UnityDataHolder.getData(ClientInfo.getGroup(Context.ConnectionId));
+            return Clients.Caller.SendAsync("DataUpdate", message);
         }
         
-        public Task sendDataToGroup(string group, string data)
+        public Task JoinGroup(string group)
         {
-            return Clients.Group(group).SendAsync("ReceiveData", data);
-        }
-        
-        public Task SendMessageToAll(string message)
-        {
-            return Clients.All.SendAsync("ReceiveMessage", message);
-        }
-
-        public Task SendMessageToCaller(string message)
-        {
-            return Clients.Caller.SendAsync("ReceiveMessage", message);
-        }
-
-        public Task SendMessageToUser(string connectionId, string message)
-        {
-            return Clients.Client(connectionId).SendAsync("ReceiveMessage", message);
-        }
-
-        public Task JoinGroup(string group) 
-        {
+            ClientInfo.setGroup(Context.ConnectionId, group);
             return Groups.AddToGroupAsync(Context.ConnectionId, group);
-        }
-
-        public Task SendMessageToGroup(string group, string message)
-        {
-            return Clients.Group(group).SendAsync("ReceiveMessage", message);
         }
 
         public override async Task OnConnectedAsync()
         {
-            await Clients.All.SendAsync("UserConnected", Context.ConnectionId);
+            await Clients.Caller.SendAsync("UserConnected");
             await base.OnConnectedAsync();
+            ClientInfo.addClient(Context.ConnectionId);
+            
         }
 
         public override async Task OnDisconnectedAsync(Exception ex)
         {
-            await Clients.All.SendAsync("UserDisconnected", Context.ConnectionId);
+            //await Clients.All.SendAsync("UserDisconnected", Context.ConnectionId);
+            ClientInfo.removeClient(Context.ConnectionId);
             await base.OnDisconnectedAsync(ex);
         }
         
-        //outside methods
-        public Task addGroup()
-        {
-            
-            return Clients.All.SendAsync("NewMethodHere", "");
-        }
-        
-        public Task removeGroup()
-        {
-            
-            return Clients.All.SendAsync("NewMethodHere", "");
-        }
-        
+        //SendMessageToAll      Clients.All.SendAsync("ReceiveMessage", message);
+        //SendMessageToCaller   Clients.Caller.SendAsync("ReceiveMessage", message);
+        //SendMessageToUser     Clients.Client(connectionId).SendAsync("ReceiveMessage", message);
+        //SendMessageToGroup    Clients.Group(group).SendAsync("ReceiveMessage", message);
     }      
 }

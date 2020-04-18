@@ -6,12 +6,15 @@ namespace DirectorServer
 {
     public class ProtoRouter
     {
+        /*
+         * Handles routing protbufs to registered destinations
+         */
         private static Dictionary<DataWrapper.MsgOneofCase, Routable> routes = new Dictionary<DataWrapper.MsgOneofCase, Routable>();
-        public static void routeProtobuf(DataWrapper wrapper)
+        public static void routeProtobuf(DataWrapper wrapper, string ID)
         {
             if (routes.ContainsKey(wrapper.MsgCase))
             {
-                routes[wrapper.MsgCase].route(wrapper);
+                routes[wrapper.MsgCase].route(wrapper, ID);
                 Console.WriteLine($"Routed {wrapper.MsgCase}");
             }
             else
@@ -20,15 +23,11 @@ namespace DirectorServer
             }
         }
         
-        public void registerRoute(DataWrapper.MsgOneofCase buffName, Routable routable)
+        public static void registerRoute(DataWrapper.MsgOneofCase buffName, Routable routable)
         {
             routes.TryAdd(buffName, routable);
         }
         
-        public ProtoRouter()
-        {
-            routes.TryAdd(DataWrapper.MsgOneofCase.DataList, new UnityDataHolder());
-        }
         
     }
 }

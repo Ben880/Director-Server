@@ -4,7 +4,10 @@ namespace DirectorServer
 {
     public class Routable
     {
-        public virtual void route(DataWrapper wrapper)
+        /*
+         * Extendable class for sendining a method to call with a protobuf
+         */
+        public virtual void route(DataWrapper wrapper, string ID)
         {
            
         }

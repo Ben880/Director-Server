@@ -3,7 +3,7 @@
 namespace DirectorServer.Tests
 {
     [TestFixture]
-    public class ClientManagerTester
+    public class ClientsManagerTester
     {
         
 
@@ -22,7 +22,7 @@ namespace DirectorServer.Tests
         [Test]
         public void IncrimentalIDTest()
         {
-            Assert.True(ClientManager.getID() != ClientManager.getID());
+            Assert.True(GetID.getID() != GetID.getID());
         }
 
 

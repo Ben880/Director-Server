@@ -10,13 +10,14 @@ namespace DirectorServer
     {
         private readonly TcpClient client;
         private readonly byte[] buffer = new byte[1024];
-        private int clientID;
+        private string clientID = "0";
+        private ProtoRouter pr = new ProtoRouter();
 
         public SocketHandler(TcpClient client)
         {
             this.client = client;
-            clientID = ClientManager.getID();
-            ClientManager.registerClient(clientID);
+            ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.DataList, new DataRoute());
+            ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.UnitySettings, new ClientInfoRoute());
         }
 
         public void HandleConnection()
@@ -37,7 +38,7 @@ namespace DirectorServer
                         }
                         while (stream.DataAvailable);
                         Console.WriteLine("End of stream");
-                        ProtoRouter.routeProtobuf(wrapper);
+                        ProtoRouter.routeProtobuf(wrapper, clientID);
                         stream.Flush();
                 } while (client.Connected);
             }
@@ -46,6 +47,7 @@ namespace DirectorServer
                 Console.WriteLine("Exception: {0}", e);
             }
             client.Close();
+            UnityClientList.removeClient(clientID);
         }
         
         public void sendToServer(DataWrapper protoObject)

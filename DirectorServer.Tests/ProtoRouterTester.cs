@@ -6,13 +6,12 @@ namespace DirectorServer.Tests
     [TestFixture]
     public class ProtoRouterTester
     {
-        private ProtoRouter router;
         private DataWrapper wrapper;
         private string testString = "test";
         private class TestRoute : Routable
         {
             public string test = null;
-            public override void route(DataWrapper wrapper)
+            public override void route(DataWrapper wrapper, string id)
             {
                 test = wrapper.ExecuteCommand.Name;
             }
@@ -22,9 +21,8 @@ namespace DirectorServer.Tests
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            router = new ProtoRouter();
             route = new TestRoute();
-            router.registerRoute(DataWrapper.MsgOneofCase.ExecuteCommand, route);
+            ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.ExecuteCommand, route);
             wrapper = new DataWrapper();
             wrapper.ExecuteCommand = new ExecuteCommand();
             wrapper.ExecuteCommand.Name = testString;
@@ -39,7 +37,7 @@ namespace DirectorServer.Tests
         [Test]
         public void RouteDoesNotThrow()
         {
-            ProtoRouter.routeProtobuf(wrapper);
+            ProtoRouter.routeProtobuf(wrapper, "");
             Assert.True(true);
         }
         
@@ -47,21 +45,21 @@ namespace DirectorServer.Tests
         public void SecondRouteDoesNotThrow()
         {
             route = new TestRoute();
-            router.registerRoute(DataWrapper.MsgOneofCase.ExecuteCommand, route);
+            ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.ExecuteCommand, route);
             Assert.True(true);
         }
         
         [Test]
         public void RoutedTest()
         {
-            ProtoRouter.routeProtobuf(wrapper);
+            ProtoRouter.routeProtobuf(wrapper, "");
             Assert.IsNotNull(route.test);
         }
         
         [Test]
         public void RoutedProperStringTest()
         {
-            ProtoRouter.routeProtobuf(wrapper);
+            ProtoRouter.routeProtobuf(wrapper, "");
             Assert.IsTrue(route.test.Equals(testString));
         }
 
@@ -69,8 +67,8 @@ namespace DirectorServer.Tests
         public void SecondRegisteredDoesNotRouteTest()
         {
             TestRoute tr = new TestRoute();
-            router.registerRoute(DataWrapper.MsgOneofCase.ExecuteCommand, tr);
-            ProtoRouter.routeProtobuf(wrapper);
+            ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.ExecuteCommand, tr);
+            ProtoRouter.routeProtobuf(wrapper, "");
             Assert.IsNull(tr.test);
         }
 

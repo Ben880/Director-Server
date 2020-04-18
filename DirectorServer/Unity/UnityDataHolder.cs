@@ -1,50 +1,70 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using DirectorProtobuf;
 using Microsoft.AspNetCore.SignalR;
+using NUnit.Framework.Constraints;
 
 namespace DirectorServer
 {
-    public class UnityDataHolder : Routable
+    public class UnityDataHolder
     {
-        public static Dictionary<string, float> data = new Dictionary<string, float>();
-        private static string dataString = "";
-        private static bool stringLock = false;
-
-        public override void route(DataWrapper wrapper)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (var val in wrapper.DataList.Data)
-            {
-                if (data.ContainsKey(val.Name))
-                    data[val.Name] = val.Value;
-                else
-                {
-                    data.Add(val.Name, val.Value);
-                }
-                sb.Append(val.Name + ": " + val.Value + "\n");
-            }
-            while (stringLock)
-            {
-            }
-            stringLock = true;
-            dataString = sb.ToString();
-            stringLock = false;
-            //HubContextHolder.getHubContext().Clients.All.SendAsync("NewMethodHere", "");
-        }
-            
+        /*
+         * holds all of the data for all of the unity clients
+         */
         
+        private static bool readLock =false; 
+        private static Dictionary<string, Data> dataHolder = new Dictionary<string, Data>();
 
-        public static string getData()
+        // this can probably be removed
+        private class Data
+        {
+            public string stringData = "";
+            private bool readLock = false;
+
+            public string StringData
+            {
+                get
+                {
+                    while (readLock) { }
+                    return stringData;
+                }
+                set
+                {
+                    readLock = true;
+                    stringData = value;
+                    readLock = false;
+                }
+            }
+        }
+        
+        public static string getData(string group)
         {
             string tmp;
-            while (stringLock)
-            {
-            }
-            stringLock = true;
-            tmp = dataString;
-            stringLock = false;
+            while (readLock) { }
+            readLock = true;
+            tmp = dataHolder[group].stringData;
+            readLock = false;
+            Console.WriteLine("Returning data for Group: " + group);
             return tmp;
+        }
+
+        public static void setString(string group, string data)
+        {
+            while (readLock) { }
+            readLock = true;
+            if (!dataHolder.ContainsKey(group))
+                dataHolder.Add(group, new Data());
+            dataHolder[group].stringData = data;
+            readLock = false;
+        }
+
+        public static void addGroup(string group)
+        {
+            while (readLock) { }
+            readLock = true;
+            dataHolder.Add(group, new Data());
+            readLock = false;
         }
 
 
