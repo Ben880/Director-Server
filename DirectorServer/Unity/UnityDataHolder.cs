@@ -11,6 +11,10 @@ namespace DirectorServer
     {
         /*
          * holds all of the data for all of the unity clients
+         *
+         *
+         **************** This class causes threads to hang in tests**********
+         * 
          */
         
         private static bool readLock =false; 
@@ -24,17 +28,8 @@ namespace DirectorServer
 
             public string StringData
             {
-                get
-                {
-                    while (readLock) { }
-                    return stringData;
-                }
-                set
-                {
-                    readLock = true;
-                    stringData = value;
-                    readLock = false;
-                }
+                get { return stringData; }
+                set { stringData = value; }
             }
         }
         
@@ -65,6 +60,23 @@ namespace DirectorServer
             readLock = true;
             dataHolder.Add(group, new Data());
             readLock = false;
+        }
+
+        public static void removeGroup(string group)
+        {
+            while (readLock) { }
+            readLock = true;
+            dataHolder.Remove(group);
+            readLock = false;
+        }
+
+        public static void Clear()
+        {
+            while (readLock) { }
+            readLock = true;
+            dataHolder = new Dictionary<string, Data>();
+            readLock = false;
+            throw new Exception("Data Cleared");
         }
 
 

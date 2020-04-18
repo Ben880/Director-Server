@@ -3,7 +3,7 @@
 namespace DirectorServer.Tests
 {
     [TestFixture]
-    public class ClientsManagerTester
+    public class UnityClientInfoRouteTester
     {
         
 
@@ -20,9 +20,9 @@ namespace DirectorServer.Tests
         }
 
         [Test]
-        public void IncrimentalIDTest()
+        public void BasicTests()
         {
-            Assert.True(GetID.getID() != GetID.getID());
+            Assert.True(false);
         }
 
 

@@ -20,7 +20,7 @@ namespace DirectorServer
         private static string clientsString = "";
         private static bool varLock = false; 
         
-        public static void registerClient(string clientName)
+        public static string registerClient(string clientName)
         {
             int id = 0;
             string uniqueS = "";
@@ -33,10 +33,11 @@ namespace DirectorServer
             }
             clientList.Add(clientName + uniqueS);
             varLock = false;
-            generateString();
+            generateStrings();
+            return clientName + uniqueS;
         }
 
-        private static void generateString()
+        private static void generateStrings()
         {
             StringBuilder sb = new StringBuilder();
             while (varLock ) { }
@@ -59,7 +60,7 @@ namespace DirectorServer
             varLock = true;
             clientList.Remove(clientName);
             varLock = false;
-            generateString();
+            generateStrings();
         }
 
         public static void nameChange(string clientName)
@@ -76,13 +77,23 @@ namespace DirectorServer
             if (clientsString.Equals(""))
             {
                 varLock = false;
-                generateString();
+                generateStrings();
                 while (varLock){ }
                 varLock = true;
             }
             tmp = clientsString;
             varLock = false;
             return tmp;
+        }
+
+        public static bool clientExists(string s)
+        {
+            foreach (var client in clientList)
+            {
+                if (client.Equals(s))
+                    return true;
+            }
+            return false;
         }
     }
 }

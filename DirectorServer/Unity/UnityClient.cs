@@ -7,10 +7,7 @@
         
         public string Name {
             get { return name; }
-            set {
-                if (name == null)
-                    name = value;
-            }
+            set { name = value; }
         }
         public bool PublicServer {
             get { return publicServer; }
