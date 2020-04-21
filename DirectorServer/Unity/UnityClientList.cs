@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DirectorServer.Hubs;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Logging.EventLog;
+
 
 namespace DirectorServer
 {

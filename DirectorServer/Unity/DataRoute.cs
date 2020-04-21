@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Text;
 using DirectorProtobuf;
-using DirectorServer.Hubs;
-using Microsoft.AspNet.SignalR;
-using Microsoft.AspNetCore.SignalR;
 
 namespace DirectorServer
 {

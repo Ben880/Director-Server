@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
-using DirectorServer;
-using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
-using HubCallerContext = Microsoft.AspNet.SignalR.Hubs.HubCallerContext;
-using IGroupManager = Microsoft.AspNet.SignalR.IGroupManager;
 
 namespace DirectorServer.Hubs
 {
@@ -22,13 +14,11 @@ namespace DirectorServer.Hubs
                 : UnityDataHolder.getData(ClientInfo.getGroup(Context.ConnectionId));
             return Clients.Caller.SendAsync("DataUpdate", message);
         }
-        
         public Task JoinGroup(string group)
         {
             ClientInfo.setGroup(Context.ConnectionId, group);
             return Groups.AddToGroupAsync(Context.ConnectionId, group);
         }
-
         public override async Task OnConnectedAsync()
         {
             await Clients.Caller.SendAsync("UserConnected");
@@ -36,7 +26,6 @@ namespace DirectorServer.Hubs
             ClientInfo.addClient(Context.ConnectionId);
             
         }
-
         public override async Task OnDisconnectedAsync(Exception ex)
         {
             //await Clients.All.SendAsync("UserDisconnected", Context.ConnectionId);

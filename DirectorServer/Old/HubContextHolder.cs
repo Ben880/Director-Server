@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using DirectorServer.Hubs;
-using Microsoft.AspNet.SignalR;
 
 namespace DirectorServer
 {
