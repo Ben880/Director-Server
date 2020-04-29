@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DirectorProtobuf;
+using Microsoft.VisualBasic;
 
 namespace DirectorServer
 {
@@ -11,33 +12,45 @@ namespace DirectorServer
          * registers/unregisters unity clients if they are public
          */
         private  static Dictionary<string, UnityClient> unityClients = new Dictionary<string, UnityClient>();
-        private static bool varLock;
-        
-        public override void route(DataWrapper wrapper, string id)
+
+        public override void route(DataWrapper wrapper, string id, SocketHandler sh)
         {
-            while (varLock) { }
-            varLock = true;
-            if (!unityClients.ContainsKey(id))
-                unityClients.Add(id, new UnityClient());
-            if (unityClients[id].PublicServer != wrapper.UnitySettings.Public)
+            string tmp = id;
+            lock (unityClients)
             {
+                if (!unityClients.ContainsKey(id))
+                    unityClients.Add(id, new UnityClient());
+                if (unityClients[id].PublicServer != wrapper.UnitySettings.Public)
+                {
+                    unityClients[id].PublicServer = wrapper.UnitySettings.Public;
+                    if (unityClients[id].PublicServer)
+                        tmp = UnityClientList.registerClient(id);
+                    else
+                        UnityClientList.removeClient(id);
+                }
                 unityClients[id].PublicServer = wrapper.UnitySettings.Public;
-                if (unityClients[id].PublicServer)
-                    UnityClientList.registerClient(id);
-                else
-                    UnityClientList.removeClient(id);
+                unityClients[id].Name = wrapper.UnitySettings.Name;
+                sh.clientID = tmp;
             }
-            unityClients[id].PublicServer = wrapper.UnitySettings.Public;
-            unityClients[id].Name = wrapper.UnitySettings.Name;
-            varLock = false;
         }
 
         public UnityClient getUnityClient(string id)
         {
-            while (varLock) { }
-            varLock = true;
-            return unityClients[id];
-            varLock = false;
+            UnityClient tmp;
+            lock (unityClients)
+            {
+                tmp = unityClients[id];
+            }
+            return tmp;
+        }
+
+        public override void end(string id)
+        {
+            lock (unityClients)
+            {
+                if (unityClients.ContainsKey(id))
+                    unityClients.Remove(id);
+            }
         }
     }
 }

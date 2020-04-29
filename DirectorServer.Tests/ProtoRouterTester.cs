@@ -11,7 +11,7 @@ namespace DirectorServer.Tests
         private class TestRoute : Routable
         {
             public string test = null;
-            public override void route(DataWrapper wrapper, string id)
+            public override void route(DataWrapper wrapper, string id, SocketHandler sh)
             {
                 test = wrapper.ExecuteCommand.Name;
             }
@@ -37,7 +37,7 @@ namespace DirectorServer.Tests
         [Test]
         public void RouteDoesNotThrow()
         {
-            ProtoRouter.routeProtobuf(wrapper, "");
+            ProtoRouter.routeProtobuf(wrapper, "", null);
             Assert.True(true);
         }
         
@@ -52,14 +52,14 @@ namespace DirectorServer.Tests
         [Test]
         public void RoutedTest()
         {
-            ProtoRouter.routeProtobuf(wrapper, "");
+            ProtoRouter.routeProtobuf(wrapper, "", null);
             Assert.IsNotNull(route.test);
         }
         
         [Test]
         public void RoutedProperStringTest()
         {
-            ProtoRouter.routeProtobuf(wrapper, "");
+            ProtoRouter.routeProtobuf(wrapper, "", null);
             Assert.IsTrue(route.test.Equals(testString));
         }
 
@@ -68,7 +68,7 @@ namespace DirectorServer.Tests
         {
             TestRoute tr = new TestRoute();
             ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.ExecuteCommand, tr);
-            ProtoRouter.routeProtobuf(wrapper, "");
+            ProtoRouter.routeProtobuf(wrapper, "", null);
             Assert.IsNull(tr.test);
         }
 

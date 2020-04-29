@@ -14,6 +14,22 @@ namespace DirectorServer.Hubs
                 : UnityDataHolder.getData(ClientInfo.getGroup(Context.ConnectionId));
             return Clients.Caller.SendAsync("DataUpdate", message);
         }
+        
+        public Task SendCommandsToUser()
+        {
+            string message 
+                = ClientInfo.getGroup(Context.ConnectionId).Equals("") 
+                    ? ""
+                    : CommandHolder.getEnabledCommands(ClientInfo.getGroup(Context.ConnectionId));
+            return Clients.Caller.SendAsync("DataUpdate", message);
+        }
+        
+        public Task ClickedCommand(string command)
+        {
+            CommandBuffer.clickedCommand(ClientInfo.getGroup(Context.ConnectionId),command);
+            return Clients.Caller.SendAsync("");/////////////////////////
+        }
+        
         public Task JoinGroup(string group)
         {
             ClientInfo.setGroup(Context.ConnectionId, group);
@@ -32,6 +48,7 @@ namespace DirectorServer.Hubs
             ClientInfo.removeClient(Context.ConnectionId);
             await base.OnDisconnectedAsync(ex);
         }
+        
         
         //SendMessageToAll      Clients.All.SendAsync("ReceiveMessage", message);
         //SendMessageToCaller   Clients.Caller.SendAsync("ReceiveMessage", message);

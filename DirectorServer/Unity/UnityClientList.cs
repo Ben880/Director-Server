@@ -12,49 +12,45 @@ namespace DirectorServer
          */
         private static List<string> clientList = new List<string>();
         private static string clientsString = "";
-        private static bool varLock = false; 
-        
+
         public static string registerClient(string clientName)
         {
             int id = 0;
             string uniqueS = "";
-            while (varLock){ }
-            varLock = true;
-            while (clientList.Contains(clientName + uniqueS))
+            lock (clientList)
             {
-                uniqueS = id.ToString();
-                id++;
+                while (clientList.Contains(clientName + uniqueS))
+                {
+                    uniqueS = id.ToString();
+                    id++;
+                }
+                clientList.Add(clientName + uniqueS);
             }
-            clientList.Add(clientName + uniqueS);
-            varLock = false;
             generateStrings();
+            Console.WriteLine($"Unity Client connected under: {clientName}, assigned name: {clientName + uniqueS}");
             return clientName + uniqueS;
         }
 
         private static void generateStrings()
         {
             StringBuilder sb = new StringBuilder();
-            while (varLock ) { }
-            varLock = true;
             sb.Append("ConnectedUnityClients: \n");
             if (clientList.Count > 0)
                 sb.Append(clientList[0]);
             for (int i = 1; i < clientList.Count; i++)
             {
-                sb.Append(",\n");
+                sb.Append(",\n"); 
                 sb.Append(clientList[i]);
             }
             clientsString = sb.ToString();
-            varLock = false;
-
         }
         public static void removeClient(string clientName)
         {
-            while (varLock){ }
-            varLock = true;
-            clientList.Remove(clientName);
-            varLock = false;
-            generateStrings();
+            lock (clientList)
+            {
+                clientList.Remove(clientName);
+                generateStrings();
+            }
         }
 
         public static void nameChange(string clientName)
@@ -66,28 +62,27 @@ namespace DirectorServer
         public static string getClientList()
         {
             string tmp = "";
-            while (varLock){ }
-            varLock = true;
-            if (clientsString.Equals(""))
+            lock (clientList)
             {
-                varLock = false;
-                generateStrings();
-                while (varLock){ }
-                varLock = true;
+                if (clientsString.Equals(""))
+                    generateStrings();
+                tmp = clientsString;
             }
-            tmp = clientsString;
-            varLock = false;
             return tmp;
         }
 
         public static bool clientExists(string s)
         {
-            foreach (var client in clientList)
+            bool rVal = false;
+            lock (clientList)
             {
-                if (client.Equals(s))
-                    return true;
+                foreach (var client in clientList)
+                {
+                    if (client.Equals(s))
+                        rVal = true;
+                }
             }
-            return false;
+            return rVal;
         }
     }
 }

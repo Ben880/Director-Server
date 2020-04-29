@@ -10,12 +10,12 @@ namespace DirectorServer
          * Handles routing protbufs to registered destinations
          */
         private static Dictionary<DataWrapper.MsgOneofCase, Routable> routes = new Dictionary<DataWrapper.MsgOneofCase, Routable>();
-        public static void routeProtobuf(DataWrapper wrapper, string ID)
+        public static void routeProtobuf(DataWrapper wrapper, string ID,  SocketHandler sh)
         {
             if (routes.ContainsKey(wrapper.MsgCase))
             {
-                routes[wrapper.MsgCase].route(wrapper, ID);
-                Console.WriteLine($"Routed {wrapper.MsgCase}");
+                routes[wrapper.MsgCase].route(wrapper, ID, sh);
+                //Console.WriteLine($"Routed {wrapper.MsgCase}");
             }
             else
             {
@@ -27,6 +27,15 @@ namespace DirectorServer
         {
             routes.TryAdd(buffName, routable);
         }
+
+        public static void clientEndConnection(string id)
+        {
+            foreach (var pair in routes)
+            {
+                pair.Value.end(id);
+            }
+        }
+        
         
         
     }

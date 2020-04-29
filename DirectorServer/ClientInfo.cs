@@ -5,7 +5,7 @@ namespace DirectorServer
 {
     public class ClientInfo
     {
-        public static Dictionary<string, WebClient> clients = new Dictionary<string, WebClient?>();
+        public static Dictionary<string, WebClient> clients = new Dictionary<string, WebClient>();
 
         public class WebClient
         {

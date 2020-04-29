@@ -12,70 +12,54 @@ namespace DirectorServer
          **************** This class causes threads to hang in tests**********
          * 
          */
-        
-        private static bool readLock =false; 
         private static Dictionary<string, Data> dataHolder = new Dictionary<string, Data>();
 
         // this can probably be removed
         private class Data
         {
             public string stringData = "";
-            private bool readLock = false;
-
-            public string StringData
-            {
-                get { return stringData; }
-                set { stringData = value; }
-            }
         }
-        
         public static string getData(string group)
         {
             string tmp;
-            while (readLock) { }
-            readLock = true;
-            tmp = dataHolder[group].stringData;
-            readLock = false;
-            Console.WriteLine("Returning data for Group: " + group);
+            lock (dataHolder)
+            {
+                tmp = dataHolder[group].stringData;
+            }
             return tmp;
         }
-
         public static void setString(string group, string data)
         {
-            while (readLock) { }
-            readLock = true;
-            if (!dataHolder.ContainsKey(group))
-                dataHolder.Add(group, new Data());
-            dataHolder[group].stringData = data;
-            readLock = false;
+            lock (dataHolder)
+            {
+                if (!dataHolder.ContainsKey(group))
+                    dataHolder.Add(group, new Data());
+                dataHolder[group].stringData = data;
+            }
         }
-
         public static void addGroup(string group)
         {
-            while (readLock) { }
-            readLock = true;
-            dataHolder.Add(group, new Data());
-            readLock = false;
+            lock (dataHolder)
+            {
+                dataHolder.Add(group, new Data());
+            }
         }
-
         public static void removeGroup(string group)
         {
-            while (readLock) { }
-            readLock = true;
-            dataHolder.Remove(group);
-            readLock = false;
+            lock (dataHolder)
+            {
+                if (dataHolder.ContainsKey(group))
+                    dataHolder.Remove(group);
+            }
         }
-
         public static void Clear()
         {
-            while (readLock) { }
-            readLock = true;
-            dataHolder = new Dictionary<string, Data>();
-            readLock = false;
+            lock (dataHolder)
+            {
+                dataHolder = new Dictionary<string, Data>();
+            }
             throw new Exception("Data Cleared");
         }
-
-
     }
     
     
