@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using DirectorProtobuf;
 
 namespace DirectorServer
@@ -7,6 +8,7 @@ namespace DirectorServer
     {
         public override void route(DataWrapper wrapper, string ID, SocketHandler sh)
         {
+            Console.WriteLine("CR");
             CommandHolder.updateCommand(ID, wrapper.CommandChange.Name, wrapper.CommandChange.Value);
         }
 

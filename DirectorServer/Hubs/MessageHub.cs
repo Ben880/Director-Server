@@ -21,13 +21,13 @@ namespace DirectorServer.Hubs
                 = ClientInfo.getGroup(Context.ConnectionId).Equals("") 
                     ? ""
                     : CommandHolder.getEnabledCommands(ClientInfo.getGroup(Context.ConnectionId));
-            return Clients.Caller.SendAsync("DataUpdate", message);
+            return Clients.Caller.SendAsync("CommandUpdate", message);
         }
         
         public Task ClickedCommand(string command)
         {
             CommandBuffer.clickedCommand(ClientInfo.getGroup(Context.ConnectionId),command);
-            return Clients.Caller.SendAsync("");/////////////////////////
+            return Clients.Caller.SendAsync("ReturnClicked");
         }
         
         public Task JoinGroup(string group)

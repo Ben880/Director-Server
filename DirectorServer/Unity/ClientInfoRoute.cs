@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DirectorProtobuf;
 using Microsoft.VisualBasic;
 
@@ -15,6 +16,7 @@ namespace DirectorServer
 
         public override void route(DataWrapper wrapper, string id, SocketHandler sh)
         {
+            Console.WriteLine("CIR");
             string tmp = id;
             lock (unityClients)
             {

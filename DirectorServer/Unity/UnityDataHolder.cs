@@ -7,14 +7,10 @@ namespace DirectorServer
     {
         /*
          * holds all of the data for all of the unity clients
-         *
-         *
          **************** This class causes threads to hang in tests**********
-         * 
          */
         private static Dictionary<string, Data> dataHolder = new Dictionary<string, Data>();
-
-        // this can probably be removed
+        
         private class Data
         {
             public string stringData = "";
@@ -24,7 +20,12 @@ namespace DirectorServer
             string tmp;
             lock (dataHolder)
             {
-                tmp = dataHolder[group].stringData;
+                if (dataHolder.ContainsKey(group))
+                    tmp = dataHolder[group].stringData;
+                else
+                {
+                    tmp = "Error, no data for group: " + group;
+                }
             }
             return tmp;
         }

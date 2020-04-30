@@ -21,20 +21,16 @@ namespace DirectorServer
         {
             try
             {
-                Console.WriteLine("Connected!");
+                Console.WriteLine("UnityConnected!");
                 do
                 {
-                    //Console.WriteLine("Listening for data");
                     DataWrapper wrapper = new DataWrapper();
                     var stream = client.GetStream();
                         do
                         {
                             wrapper.MergeDelimitedFrom(stream);
-                            //int numberOfBytesRead = stream.Read(buffer, 0, buffer.Length);
-                            //stream.Write(buffer, 0, numberOfBytesRead);
                         }
                         while (stream.DataAvailable);
-                        //Console.WriteLine("End of stream");
                         ProtoRouter.routeProtobuf(wrapper, clientID, this);
                         stream.Flush();
                 } while (client.Connected);
@@ -72,14 +68,14 @@ namespace DirectorServer
 
         public UnityConnection()
         {
+            ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.DataList, new DataRoute());
+            ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.UnitySettings, new ClientInfoRoute());
+            ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.CommandChange, new CommandRoute());
             new ProtoRouter();
             var server = new TcpListener(netConfig.Address, netConfig.Port);
             try
             {
                 server.Start();
-                ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.DataList, new DataRoute());
-                ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.UnitySettings, new ClientInfoRoute());
-                ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.CommandChange, new CommandRoute());
                 while (true)
                 {
                     var handler = new SocketHandler(server.AcceptTcpClient());

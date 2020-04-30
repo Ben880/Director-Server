@@ -51,8 +51,47 @@ document.getElementById("sendButton").addEventListener("click", function(event) 
 //==========================================================
 //==================== My Methods ==========================
 //==========================================================
+/*document.getElementById("CommandButton").addEventListener("click", function(event) {
+    var fired_button = $(this).val();
+    connection.invoke("ClickedCommand", fired_button).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+});*/
+connection.on("ReturnClicked", function(message) {
+});
+connection.on("CommandUpdate", function(message) {
+    var commands = message.split(",");
+    var buttunsDiv = document.getElementById("buttons");
+    buttunsDiv.innerHTML = "";
+    commands.forEach(element => {
+        if (element != "")
+        {
+            var button = document.createElement("button");
+            button.id = "CommandButton";
+            button.value = element;
+            button.innerText = element;
+            buttunsDiv.appendChild(button);
+            button.addEventListener("click", function(event) {
+                var fired_button = $(this).val();
+                console.log(element);
+                connection.invoke("ClickedCommand", fired_button).catch(function (err) {
+                    return console.error(err.toString());
+                });
+                event.preventDefault();
+            });
+        }
+    });
+    connection.invoke("SendCommandsToUser").catch(function (err) {
+        return console.error(err.toString());//if there is a transmission error it will stop forever
+    });
+});
+
 connection.on("UserConnected", function(connectionId) {
     connection.invoke("SendDataToUser").catch(function (err) {
+        return console.error(err.toString());//if there is a transmission error it will stop forever
+    });
+    connection.invoke("SendCommandsToUser").catch(function (err) {
         return console.error(err.toString());//if there is a transmission error it will stop forever
     });
 });
