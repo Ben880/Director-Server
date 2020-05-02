@@ -27,10 +27,13 @@ namespace DirectorServer
             StringBuilder sb = new StringBuilder();
             lock (commandHolder)
             {
-                foreach (var val in commandHolder[group])
+                foreach (var pair in commandHolder[group])
                 {
-                    sb.Append(val.Key);
-                    sb.Append(",");
+                    if (pair.Value)
+                    {
+                        sb.Append(pair.Key);
+                        sb.Append(",");
+                    }
                 }
             }
             return sb.ToString();

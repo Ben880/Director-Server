@@ -14,7 +14,7 @@ namespace DirectorServer
             StringBuilder sb = new StringBuilder();
             foreach (var val in wrapper.DataList.Data)
             {
-                sb.Append(val.Name + ": " + val.Value + "\n");
+                sb.Append(val.Name + ": " + val.Value + "<br>");
             }
             string dataString = sb.ToString();
             UnityDataHolder.setString(ID, dataString);

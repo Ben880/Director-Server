@@ -26,6 +26,7 @@ namespace DirectorServer.Hubs
         
         public Task ClickedCommand(string command)
         {
+            Console.WriteLine("user clicked command");
             CommandBuffer.clickedCommand(ClientInfo.getGroup(Context.ConnectionId),command);
             return Clients.Caller.SendAsync("ReturnClicked");
         }

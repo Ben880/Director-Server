@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DirectorProtobuf;
 
 namespace DirectorServer
@@ -14,10 +15,15 @@ namespace DirectorServer
                 if(!buffer.ContainsKey(ID))
                     buffer.Add(ID, new List<string>());
             }
-            DataWrapper returnWarapper = new DataWrapper();
-            returnWarapper.CommandChange = new CommandChange();
-            returnWarapper.CommandChange.Name = getFirstCommand(ID);
-            sh.sendToServer(returnWarapper);
+            if (buffer[ID].Count > 0)
+            {
+                Console.WriteLine("sending command to server");
+                DataWrapper returnWarapper = new DataWrapper();
+                returnWarapper.ExecuteCommand = new  ExecuteCommand();
+                returnWarapper.ExecuteCommand.Name = getFirstCommand(ID);
+                returnWarapper.ExecuteCommand.Args.Add("");
+                sh.sendToServer(returnWarapper);
+            }
         }
 
         private static string getFirstCommand(string group)
@@ -44,6 +50,7 @@ namespace DirectorServer
 
         public static void clickedCommand(string group, string command)
         {
+            Console.WriteLine("adding command to buffer");
             lock (buffer)
             {
                 if (buffer.ContainsKey(group))

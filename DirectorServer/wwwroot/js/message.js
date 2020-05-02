@@ -1,5 +1,7 @@
 ﻿"use strict";
 
+var buttonTracker = {};
+
 var connection = new signalR.HubConnectionBuilder()
     .withUrl("/messages")
     .build();
@@ -62,20 +64,29 @@ connection.on("ReturnClicked", function(message) {
 });
 connection.on("CommandUpdate", function(message) {
     var commands = message.split(",");
+    var ids = commands.map(command => `${command.split(' ').join('')}`).filter(command => command !== '');
+    Object.keys(buttonTracker).forEach(key => {
+        if (ids.indexOf(key) < 0) {
+            buttonTracker[key].remove();
+        }
+    });
     var buttunsDiv = document.getElementById("buttons");
-    buttunsDiv.innerHTML = "";
     commands.forEach(element => {
         if (element != "")
         {
+            var id = `${element.split(' ').join('')}`;
+            if (buttonTracker[id]) {
+                return;
+            }
             var button = document.createElement("button");
-            button.id = "CommandButton";
+            button.id = id;
             button.value = element;
             button.innerText = element;
             buttunsDiv.appendChild(button);
-            button.addEventListener("click", function(event) {
-                var fired_button = $(this).val();
-                console.log(element);
-                connection.invoke("ClickedCommand", fired_button).catch(function (err) {
+            var jq = $(`#${button.id}`);
+            buttonTracker[id] = jq;
+            jq.click(() => {
+                connection.invoke("ClickedCommand", element).catch(function (err) {
                     return console.error(err.toString());
                 });
                 event.preventDefault();
@@ -112,9 +123,9 @@ document.getElementById("SendData").addEventListener("click", function(event) {
 });
 
 connection.on("DataUpdate", function(message) {
-    var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    //var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var div = document.createElement("div");
-    div.innerHTML = msg + "<hr/>";
+    div.innerHTML = message + "<hr/>";
     document.getElementById("data").innerHTML = "";
     document.getElementById("data").appendChild(div);
     connection.invoke("SendDataToUser").catch(function (err) {

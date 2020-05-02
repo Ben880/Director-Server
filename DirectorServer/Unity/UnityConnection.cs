@@ -71,6 +71,7 @@ namespace DirectorServer
             ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.DataList, new DataRoute());
             ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.UnitySettings, new ClientInfoRoute());
             ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.CommandChange, new CommandRoute());
+            ProtoRouter.registerRoute(DataWrapper.MsgOneofCase.GetCommand, new CommandBuffer());
             new ProtoRouter();
             var server = new TcpListener(netConfig.Address, netConfig.Port);
             try
