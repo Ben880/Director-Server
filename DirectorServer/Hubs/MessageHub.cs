@@ -9,7 +9,7 @@ namespace DirectorServer.Hubs
         public Task SendDataToUser()
         {
             string message 
-                = ClientInfo.getGroup(Context.ConnectionId).Equals("") 
+                = ClientInfo.getGroup(Context.ConnectionId).Equals("")
                 ? UnityClientList.getClientList()
                 : UnityDataHolder.getData(ClientInfo.getGroup(Context.ConnectionId));
             return Clients.Caller.SendAsync("DataUpdate", message);
@@ -27,7 +27,7 @@ namespace DirectorServer.Hubs
         public Task ClickedCommand(string command)
         {
             Console.WriteLine("user clicked command");
-            CommandBuffer.clickedCommand(ClientInfo.getGroup(Context.ConnectionId),command);
+            CommandBuffer.addCommand(ClientInfo.getGroup(Context.ConnectionId),command);
             return Clients.Caller.SendAsync("ReturnClicked");
         }
         

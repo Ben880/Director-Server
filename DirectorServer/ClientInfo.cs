@@ -5,6 +5,9 @@ namespace DirectorServer
 {
     public class ClientInfo
     {
+        //======================================================================================
+        // Purpose: Handle web client info
+        // =====================================================================================
         public static Dictionary<string, WebClient> clients = new Dictionary<string, WebClient>();
 
         public class WebClient
@@ -15,34 +18,54 @@ namespace DirectorServer
 
         public static void addClient(string id)
         {
-            clients.Add(id, new WebClient());
-            Console.WriteLine("Client Connected: " + id);
+            if (id == null)
+                throw new NullReferenceException();
+            if (!clients.ContainsKey(id))
+            {
+                clients.Add(id, new WebClient());
+                Console.WriteLine("Client Connected: " + id);
+            }
+            else
+            {
+                Console.WriteLine("Client duplicate: " + id);
+            }
         }
 
         public static void removeClient(string id)
         {
-            clients.Remove(id);
+            if (clients.ContainsKey(id))
+                clients.Remove(id);
             Console.WriteLine("Client Disconnected: " + id);
         }
 
         public static string getGroup(string id)
         {
-            return clients[id].connectedGroup;
+            if (clients.ContainsKey(id))
+                return clients[id].connectedGroup;
+            return "";
         }
 
         public static void setGroup(string id, string group)
         {
-            clients[id].connectedGroup = group;
+            if (id == null || group == null)
+                throw new NullReferenceException();
+            if (clients.ContainsKey(id))
+                clients[id].connectedGroup = group;
         }
 
         public static bool doSendInfo(string id)
         {
-            return clients[id].sendInfo;
+            if (clients.ContainsKey(id))
+                return clients[id].sendInfo;
+            return false;
         }
 
         public static void setSendInfo(string id, bool b)
         {
-            clients[id].sendInfo = b;
+            if (id == null)
+                throw new NullReferenceException();
+            if (clients.ContainsKey(id))
+                clients[id].sendInfo = b;
         }
         
         

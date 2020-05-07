@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace DirectorServer.Tests
 {
@@ -20,15 +21,16 @@ namespace DirectorServer.Tests
         }
 
         [Test]
-        public void AddDuplicate()
+        public void AddDuplicateDNT()
         {
-            Assert.DoesNotThrow(new TestDelegate(add));
+            Assert.DoesNotThrow(() => ClientInfo.addClient(ts));
         }
         
         [Test]
-        public void RemoveDuplicate()
+        public void RemoveDuplicateDNT()
         {
-            Assert.DoesNotThrow(new TestDelegate(remove));
+            Assert.DoesNotThrow(() => ClientInfo.removeClient(ts));
+            Assert.DoesNotThrow(() => ClientInfo.removeClient(ts));
         }
         
         [Test]
@@ -36,18 +38,34 @@ namespace DirectorServer.Tests
         {
             ClientInfo.setGroup(ts, ts);
             Assert.True(ClientInfo.getGroup(ts).Equals(ts));
-            Assert.DoesNotThrow(new TestDelegate(remove));
+            Assert.DoesNotThrow(() => ClientInfo.removeClient(ts));
         }
 
-        public void add()
+        [Test]
+        public void AddClientNullThrows()
         {
-            ClientInfo.addClient(ts);
+            Assert.Throws<NullReferenceException>(() => ClientInfo.addClient(null));
         }
         
-        public void remove()
+        [Test]
+        public void JoinGroupNullThrows()
         {
-            ClientInfo.removeClient(ts);
+            Assert.Throws<NullReferenceException>(() => ClientInfo.setGroup(null, ts));
+            Assert.Throws<NullReferenceException>(() => ClientInfo.setGroup(ts, null));
         }
+        
+        [Test]
+        public void UnregisterdNameDNT()
+        {
+            Assert.DoesNotThrow(() => ClientInfo.addClient(""));
+            Assert.DoesNotThrow(() => ClientInfo.getGroup(""));
+            Assert.DoesNotThrow(() => ClientInfo.setSendInfo("", true));
+            Assert.DoesNotThrow(() => ClientInfo.setGroup("", ts));
+            Assert.DoesNotThrow(() => ClientInfo.setGroup(ts, ""));
+            Assert.DoesNotThrow(() => ClientInfo.removeClient(""));
+            Assert.DoesNotThrow(() => ClientInfo.doSendInfo(""));
+        }
+
 
     }
 }

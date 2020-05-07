@@ -2,6 +2,9 @@
 {
     public class UnityClient
     {
+        //======================================================================================
+        // Purpose: Class for holding unity client info
+        // =====================================================================================
         private string name = "";
         private bool publicServer = false;
         

@@ -13,49 +13,70 @@ namespace DirectorServer.Tests
         [SetUp]
         public void Setup()
         {
-            UnityDataHolder.addGroup(ts);
+            UnityDataHolder.addClient(ts);
         }
-
+        
         [TearDown]
         public void TearDown()
         {
-            try { UnityDataHolder.Clear(); }
-            catch (Exception e) { }
+            UnityDataHolder.removeClient(ts);
         }
 
+        [Test]
+        public void DuplicateClientAddedDNT()
+        {
+            Assert.DoesNotThrow(()=> UnityDataHolder.addClient(ts));
+        }
+        
+        [Test]
+        public void DuplicateClientRemovedDNT()
+        {
+            Assert.DoesNotThrow(()=> UnityDataHolder.removeClient(ts));
+            Assert.DoesNotThrow(()=> UnityDataHolder.removeClient(ts));
+        }
+        
         [Test]
         public void CanGetData()
         {
             Assert.IsNotNull(UnityDataHolder.getData(ts));
         }
-        
+
         [Test]
-        public void NoGroupException()
-        {
-            UnityDataHolder.removeGroup(ts);
-            Assert.Throws<KeyNotFoundException>(new TestDelegate(getData));
-        }
-        
-        [Test]
-        public void Remove()
-        {
-            UnityDataHolder.removeGroup(ts);
-            Assert.Throws<KeyNotFoundException>(new TestDelegate(getData));
-        }
-        
-        [Test]
-        public void GetAndSetString()
+        public void SetAndGetString()
         {
             UnityDataHolder.setString(ts, ts);
             Assert.True(UnityDataHolder.getData(ts).Equals(ts));
-            UnityDataHolder.removeGroup(ts);
+            UnityDataHolder.removeClient(ts);
         }
-
-        private void getData()
+        
+        [Test]
+        public void AddClientNullThrows()
         {
-            UnityDataHolder.getData(ts);
+            Assert.Throws<NullReferenceException>(() => UnityDataHolder.addClient(null));
         }
 
+        [Test]
+        public void SetDataNullThrows()
+        {
+            Assert.Throws<NullReferenceException>(() => UnityDataHolder.setString(null, ts));
+            Assert.Throws<NullReferenceException>(() => UnityDataHolder.setString(ts, null));
+        }
+        
+        [Test]
+        public void ChangeClientIDNullThrows()
+        {
+            Assert.Throws<NullReferenceException>(() => UnityDataHolder.changeClientID(null, ts));
+            Assert.Throws<NullReferenceException>(() => UnityDataHolder.changeClientID(ts, null));
+        }
+        
+        [Test]
+        public void UnregisteredNameDNT()
+        {
+            Assert.DoesNotThrow(() => UnityDataHolder.changeClientID( "", ""));
+            Assert.DoesNotThrow(() => UnityDataHolder.removeClient( ""));
+            Assert.DoesNotThrow(() => UnityDataHolder.setString( "", ts));
+            Assert.DoesNotThrow(() => UnityDataHolder.getData( ""));
 
+        }
     }
 }
