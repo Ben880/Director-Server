@@ -23,6 +23,8 @@ namespace DirectorServer
                 UnityClientList.removeClient(id);
                 sh.clientID = newID;
                 id = newID;
+                DataWrapper returnWrapper = new DataWrapper {UnitySettings = new UnitySettings {Name = newID}};
+                sh.sendToServer(returnWrapper);
             }
             if (UnityClientList.clientExists(id))
             {

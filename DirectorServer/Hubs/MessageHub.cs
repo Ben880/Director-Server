@@ -36,24 +36,18 @@ namespace DirectorServer.Hubs
             ClientInfo.setGroup(Context.ConnectionId, group);
             return Groups.AddToGroupAsync(Context.ConnectionId, group);
         }
+        
         public override async Task OnConnectedAsync()
         {
             await Clients.Caller.SendAsync("UserConnected");
             await base.OnConnectedAsync();
             ClientInfo.addClient(Context.ConnectionId);
-            
         }
+        
         public override async Task OnDisconnectedAsync(Exception ex)
         {
-            //await Clients.All.SendAsync("UserDisconnected", Context.ConnectionId);
             ClientInfo.removeClient(Context.ConnectionId);
             await base.OnDisconnectedAsync(ex);
         }
-        
-        
-        //SendMessageToAll      Clients.All.SendAsync("ReceiveMessage", message);
-        //SendMessageToCaller   Clients.Caller.SendAsync("ReceiveMessage", message);
-        //SendMessageToUser     Clients.Client(connectionId).SendAsync("ReceiveMessage", message);
-        //SendMessageToGroup    Clients.Group(group).SendAsync("ReceiveMessage", message);
     }      
 }
