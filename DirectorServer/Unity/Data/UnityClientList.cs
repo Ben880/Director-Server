@@ -79,7 +79,6 @@ namespace DirectorServer
                 {
                     if (pair.Value.PublicServer)
                     {
-                        Console.WriteLine(pair.Key);
                         if (count > 0)
                             sb.Append(",");
                         sb.Append(pair.Key);

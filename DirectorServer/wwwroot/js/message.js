@@ -57,6 +57,9 @@ connection.on("UserConnected", function(connectionId) {
 
 document.getElementById("JoinGroup").addEventListener("click", function(event) {
     var group = document.getElementById("GroupText").value;
+    Object.keys(buttonTracker).forEach(key => {
+            buttonTracker[key].remove();
+    });
     connection.invoke("JoinGroup", group).catch(function (err) {
         return console.error(err.toString());
     });

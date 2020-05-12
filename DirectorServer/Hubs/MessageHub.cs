@@ -34,7 +34,12 @@ namespace DirectorServer.Hubs
         public Task JoinGroup(string group)
         {
             ClientInfo.setGroup(Context.ConnectionId, group);
-            return Groups.AddToGroupAsync(Context.ConnectionId, group);
+            string message 
+                = ClientInfo.getGroup(Context.ConnectionId).Equals("") 
+                    ? ""
+                    : CommandHolder.getEnabledCommands(ClientInfo.getGroup(Context.ConnectionId));
+            Groups.AddToGroupAsync(Context.ConnectionId, group);
+            return Clients.Caller.SendAsync("CommandUpdate", message);
         }
         
         public override async Task OnConnectedAsync()
